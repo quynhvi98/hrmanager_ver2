@@ -13,10 +13,13 @@ import javax.servlet.http.HttpSession;
 import HRManager.entities.User;
 import HRManager.bol.UserBO;
 import javax.servlet.RequestDispatcher;
+
 public class Login extends HttpServlet {
 
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -27,9 +30,10 @@ public class Login extends HttpServlet {
         String userName = request.getParameter("txtUserName");
         String userPassword = request.getParameter("txtPassword");
         HRManager.ValidData valid = new HRManager.ValidData();
-        if (userName == null) {
+        if (userName.length()==0) {
             goPage(request, response, "login.jsp?error=UserName");
-        } else if (userPassword == null || !valid.isPassword(userPassword)) {
+//        } else if (userPassword == null || !valid.isPassword(userPassword)) {
+        } else if (userPassword.length()==0) {
             goPage(request, response, "login.jsp?error=Password");
         } else {
             User u = new User();
@@ -53,8 +57,9 @@ public class Login extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -66,8 +71,9 @@ public class Login extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -79,8 +85,9 @@ public class Login extends HttpServlet {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

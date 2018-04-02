@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+    "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
     <head>
@@ -26,9 +27,7 @@
         </div>
         <div class="content">
             <br><br>
-            <%
-        String error = request.getParameter("error");
-            %>
+
             <jsp:useBean id="valid" class="HRManager.ValidData" scope="session"/>
 
             <table align="center" id="tb2">
@@ -39,29 +38,28 @@
                     <tr>
                         <td>User Name: </td>
                         <td><input type="text" name="txtUserName"></td>
-                        <%
-        if (error != null && error.equals("UserName")) {
-            out.println("<td>Not null...</td>");
-        }%>
+                            <c:if test="${not empty param.error and param.error eq 'UserName'}">
+                            <td>Not null...</td>
+                        </c:if>
+
+
                     </tr>
                     <tr>
                         <td>Password: </td>
                         <td><input type="password" name="txtPassword"></td>
-                        <%
-        if (error != null && error.equals("Password")) {
-            out.println("<td>Password incorrect!</td>");
-        }%>
+                            <c:if test="${not empty param.error and param.error eq 'Password'}">
+                            <td>Password incorrect!</td>
+                        </c:if>
+
                     </tr>
                     <tr>
                         <td colspan="2"><center><input type="submit" name="btnLogin" value="Login"></center></td>
                     </tr>
                 </form>
             </table>
-            <%
-        if (error != null) {
-            out.println("Login Error!");
-        }
-            %>
+            <c:if test="${not empty param.error}">
+                Login Error!
+            </c:if>
         </div>
     </body>
 </html>

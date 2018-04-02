@@ -6,6 +6,7 @@ package HRManager.dal;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,12 +27,18 @@ public class DAO {
     public DAO() {
         this.driver = "net.sourceforge.jtds.jdbc.Driver";
         this.urlDriver = "jdbc:jtds:sqlserver://";
-        this.hostName = "127.0.0.1";
+        this.hostName = "localhost";
         this.port = "1433";
-        this.databaseName = "HRManager";
-        this.userName = "admin_HRManager";
-        this.password = "admin_HRManager";
+        this.databaseName = "HrManager";
+        this.userName = "sa";
+        this.password = "123456";
         this.openConnection();
+    }
+
+    public ResultSet executeQuery(PreparedStatement ps) throws SQLException {
+        ResultSet rs = null;
+        rs = ps.executeQuery();
+        return rs;
     }
 
     public ResultSet executeQuery(String sql) throws SQLException {
@@ -44,14 +51,10 @@ public class DAO {
         return rs;
     }
 
-    public int executeUpdateQuery(String sql) {
-        if (cnn == null) {
-            openConnection();
-        }
+    public int executeUpdateQuery(PreparedStatement ps) {
         int resultCount = 0;
         try {
-            Statement stm = cnn.createStatement();
-            resultCount = stm.executeUpdate(sql);
+            resultCount = ps.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
@@ -63,7 +66,7 @@ public class DAO {
     public void openConnection() {
         try {
             Class.forName(this.driver);
-            cnn = DriverManager.getConnection(this.urlDriver + this.hostName + ":" + this.port + "/" + this.databaseName, this.userName, this.password);
+            cnn = DriverManager.getConnection(this.urlDriver + this.hostName + ":" + this.port + ";databaseName=" + this.databaseName, this.userName, this.password);
         } catch (SQLException ex) {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -72,6 +75,9 @@ public class DAO {
     }
 
     public Connection getConnection() {
+        if (cnn == null) {
+            openConnection();
+        }
         return cnn;
     }
 

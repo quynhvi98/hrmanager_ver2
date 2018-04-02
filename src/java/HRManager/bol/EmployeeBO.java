@@ -5,67 +5,109 @@
 package HRManager.bol;
 
 import HRManager.ConvertData;
+import HRManager.ValidData;
 import HRManager.dal.DAO;
 import HRManager.entities.Employee;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EmployeeBO {
 
+    PreparedStatement ps;
+    DAO dao = new DAO();
+
     /**
      *
-    add new Employee to database
+     * add new Employee to database
      */
     public int add(Employee e) {
         ConvertData cv = new ConvertData();
-        String sql = "INSERT INTO Employees(LastName, FirstName, BirthDate, HireDate, Address, City, Country, " +
-                "HomePhone, Mobile, Email, Note) VALUES('" + e.getLastName() + "', '" + e.getFirstName() +
-                "', '" + cv.date2string(e.getBirthDate(), HRManager.ValidData.EN_DATE) +
-                "', '" + cv.date2string(e.getHireDate(), HRManager.ValidData.EN_DATE) + "', '" +
-                e.getAddress() + "', '" + e.getCity() + "', '" + e.getCountry() + "', '" + e.getHomePhone() + "', '" +
-                e.getMobile() + "', '" + e.getEmail() + "', '" + e.getNote() + "')";
-        DAO dao = new DAO();
-        System.out.println(sql);
-        return dao.executeUpdateQuery(sql);
+        String sql = "INSERT INTO Employees(LastName, FirstName, BirthDate, HireDate, Address, City, Country, "
+                + "HomePhone, Mobile, Email, Note) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+
+            ps = dao.getConnection().prepareStatement(sql);
+            ps.setString(1, e.getLastName());
+            ps.setString(2, e.getFirstName());
+            ps.setString(3, cv.date2string(e.getBirthDate(), ValidData.EN_DATE));
+            ps.setString(4, cv.date2string(e.getHireDate(), ValidData.EN_DATE));
+            ps.setString(5, e.getAddress());
+            ps.setString(6, e.getCity());
+            ps.setString(7, e.getCountry());
+            ps.setString(8, e.getHomePhone());
+            ps.setString(9, e.getMobile());
+            ps.setString(10, e.getEmail());
+            ps.setString(11, e.getNote());
+            System.out.println("add query" + sql);
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeBO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dao.executeUpdateQuery(ps);
+
     }
 
     /**
      *
-    delete Employee into database
+     * delete Employee into database
      */
     public int delete(Employee e) {
-        String sql = "DELETE FROM Employees WHERE EmployeeID=" + e.getEmployeeID();
-        DAO dao = new DAO();
-        return dao.executeUpdateQuery(sql);
+        String sql = "DELETE FROM Employees WHERE EmployeeID=?";
+        try {
+            ps = dao.getConnection().prepareStatement(sql);
+            ps.setInt(1, e.getEmployeeID());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeBO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dao.executeUpdateQuery(ps);
     }
 
     /**
      *
-    update old Employee  by new Employee into database
+     * update old Employee by new Employee into database
      */
     public int edit(Employee e) {
         ConvertData cv = new ConvertData();
-        String sql = "UPDATE Employees SET LastName='" + e.getLastName() + "', FirstName='" + e.getFirstName() +
-                "', BirthDate='" + cv.date2string(e.getBirthDate(), HRManager.ValidData.EN_DATE) +
-                "', HireDate='" + cv.date2string(e.getHireDate(), HRManager.ValidData.EN_DATE) +
-                "', Address='" + e.getAddress() + "', City='" + e.getCity() + "', Country='" + e.getCountry() +
-                "', HomePhone='" + e.getHomePhone() + "', Mobile='" + e.getMobile() + "', Email='" + e.getEmail() +
-                "', PhotoPath='" + e.getPhotoPath() + "', Note='" + e.getNote() +
-                "' WHERE EmployeeID=" + e.getEmployeeID();
-        DAO dao = new DAO();
-        return dao.executeUpdateQuery(sql);
+        String sql = "UPDATE Employees SET LastName=?, FirstName=?, BirthDate=?, HireDate=?, Address=?, City=?, Country=?,"
+                + "HomePhone=?, Mobile=?, Email=?, PhotoPath=?, Note=? WHERE EmployeeID=?";
+        try {
+
+            ps = dao.getConnection().prepareStatement(sql);
+            ps.setString(1, e.getLastName());
+            ps.setString(2, e.getFirstName());
+            ps.setString(3, cv.date2string(e.getBirthDate(), HRManager.ValidData.EN_DATE));
+            ps.setString(4, cv.date2string(e.getHireDate(), HRManager.ValidData.EN_DATE));
+            ps.setString(5, e.getAddress());
+            ps.setString(6, e.getCity());
+            ps.setString(7, e.getCountry());
+            ps.setString(8, e.getHomePhone());
+            ps.setString(9, e.getMobile());
+            ps.setString(10, e.getEmail());
+            ps.setString(11, e.getPhotoPath());
+            ps.setString(12, e.getNote());
+            ps.setInt(13, e.getEmployeeID());
+            System.out.println("edit query" + sql);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeBO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dao.executeUpdateQuery(ps);
     }
 
     /**
      *
-    Lay ve tat ca cac Employee co trong CSDL.
+     * Lay ve tat ca cac Employee co trong CSDL.
      */
-    public Employee[] select() {
+    public List<Employee> select() {
         String sql = "select * from Employees";
-        DAO dao = new DAO();
+//        DAO dao = new DAO();
 
-        Vector vE = new Vector();
+        List<Employee> list = new LinkedList();
         try {
             ResultSet rs = dao.executeQuery(sql);
             while (rs.next()) {
@@ -83,7 +125,7 @@ public class EmployeeBO {
                 e.setEmail(rs.getString("Email"));
                 e.setPhotoPath(rs.getString("PhotoPath"));
                 e.setNote(rs.getString("Note"));
-                vE.add(e);
+                list.add(e);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -91,28 +133,43 @@ public class EmployeeBO {
             return null;
         }
         dao.closeConnection();
-        return convertToArray(vE);
+        return list;
     }
 
     /**
      *
-    Tim kiem Employee co trong CSDL.
+     * Tim kiem Employee co trong CSDL.
      */
-    public Employee[] find(int option, String value) {
+    public List<Employee> find(int option, String value) {
         String sql = "";
         switch (option) {
             case 0:
-                sql = "select * from Employees where firstname='" + value + "' or lastname='" + value + "'";
+                sql = "select * from Employees where firstname=? or lastname=?";
+
+                try {
+                    ps = dao.getConnection().prepareStatement(sql);
+                    ps.setString(1, value);
+                    ps.setString(2, value);
+                } catch (SQLException ex) {
+                    Logger.getLogger(EmployeeBO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
                 break;
             case 1:
-                sql = "select * from Employees where city='" + value + "'";
+                sql = "select * from Employees where city=?";
+                try {
+                    ps = dao.getConnection().prepareStatement(sql);
+                    ps.setString(1, value);
+                } catch (SQLException ex) {
+                    Logger.getLogger(EmployeeBO.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
         }
-        DAO dao = new DAO();
+//        DAO dao = new DAO();
 
-        Vector vE = new Vector();
+        List<Employee> list = new LinkedList();
         try {
-            ResultSet rs = dao.executeQuery(sql);
+            ResultSet rs = dao.executeQuery(ps);
             while (rs.next()) {
                 Employee e = new Employee();
                 e.setEmployeeID(rs.getInt("EmployeeID"));
@@ -128,7 +185,7 @@ public class EmployeeBO {
                 e.setEmail(rs.getString("Email"));
                 e.setPhotoPath(rs.getString("PhotoPath"));
                 e.setNote(rs.getString("Note"));
-                vE.add(e);
+                list.add(e);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -136,18 +193,24 @@ public class EmployeeBO {
             return null;
         }
         dao.closeConnection();
-        return convertToArray(vE);
+        return list;
     }
 
     /**
      *
-    get Employee by EmployeeID
+     * get Employee by EmployeeID
      */
     public Employee getByID(int id) {
-        String sql = "select * from Employees where EmployeeID=" + id;
-        DAO dao = new DAO();
+        String sql = "select * from Employees where EmployeeID=?";
         try {
-            ResultSet rs = dao.executeQuery(sql);
+            ps = dao.getConnection().prepareStatement(sql);
+            ps.setInt(1, id);
+            System.out.println(sql);
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeBO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            ResultSet rs = dao.executeQuery(ps);
             if (rs.next()) {
                 Employee e = new Employee();
                 e.setEmployeeID(rs.getInt("EmployeeID"));
@@ -173,19 +236,4 @@ public class EmployeeBO {
         return null;
     }
 
-    /**
-     *
-    Convert from Vector to Employee Array
-     */
-    private Employee[] convertToArray(Vector v) {
-        int n = v.size();
-        if (n < 1) {
-            return null;
-        }
-        Employee[] arrEmployee = new Employee[n];
-        for (int i = 0; i < n; i++) {
-            arrEmployee[i] = (Employee) v.get(i);
-        }
-        return arrEmployee;
-    }
 }
