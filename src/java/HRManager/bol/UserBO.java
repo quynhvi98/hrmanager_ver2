@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class UserBO {
 
     public boolean authorization(User u) {
-        String sql = "select * from users where username=? and password=?";
+        String sql = "select * from users where username=? and userpassword=?";
         DAO dao = new DAO();
         PreparedStatement ps;
         ResultSet rs;

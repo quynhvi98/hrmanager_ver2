@@ -29,7 +29,7 @@ public class DAO {
         this.urlDriver = "jdbc:jtds:sqlserver://";
         this.hostName = "localhost";
         this.port = "1433";
-        this.databaseName = "HrManager";
+        this.databaseName = "HRManagerVer2";
         this.userName = "sa";
         this.password = "123456";
         this.openConnection();
