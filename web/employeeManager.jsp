@@ -62,13 +62,11 @@
                                 </c:choose>
                             </c:otherwise>
                         </c:choose>
-
                         <jsp:useBean id="convert" scope="page" class="HRManager.ConvertData"/>
-
                         <c:if test="${fn:length(list) > 0}">
                             <c:forEach items="${list}" var="em">
-                                <tr>
-                                    <td>${em.firstName} ${em.lastName}</td>
+                                <tr>                              
+                                    <td>${em.firstName} ${em.lastName}</td>                             
                                     <td>${convert.date2string(em.birthDate)}</td>
                                     <td>${convert.date2string(em.hireDate)}</td>
                                     <td>${em.address}</td>

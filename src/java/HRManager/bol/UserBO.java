@@ -26,8 +26,6 @@ public class UserBO {
                 return false;
             }
         } catch (SQLException ex) {
-            //SinhNX_Lib.getLogger(this.getClass().getName()).error("Can't get data from database. " + ex.toString());
-
             return false;
         }
         return true;

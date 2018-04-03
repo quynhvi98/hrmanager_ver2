@@ -13,31 +13,24 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class EmployeeManager extends HttpServlet {
-
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session.getAttribute("username") == null) {
             response.sendRedirect("login.jsp");
-        }
-        HRManager.bol.EmployeeBO ebo = new HRManager.bol.EmployeeBO();
-        request.setAttribute("EmpBO", ebo);
-        String value = request.getParameter("txtValue");
-        String option = request.getParameter("ddlSearch");
-        if (value == null || option == null) {
-            RequestDispatcher reqdis = request.getRequestDispatcher("employeeManager.jsp");
-            reqdis.forward(request, response);
-        } else {
-            RequestDispatcher reqdis = request.getRequestDispatcher("employeeManager.jsp?option=" + option + "&value=" + value);
-            reqdis.forward(request, response);
-        }
+        }else{
+            HRManager.bol.EmployeeBO ebo = new HRManager.bol.EmployeeBO();
+            request.setAttribute("EmpBO", ebo);
+            String value = request.getParameter("txtValue");
+            String option = request.getParameter("ddlSearch");
+            if (value == null || option == null) {
+                RequestDispatcher reqdis = request.getRequestDispatcher("employeeManager.jsp");
+                reqdis.forward(request, response);
+            }else {
+                RequestDispatcher reqdis = request.getRequestDispatcher("employeeManager.jsp?option=" + option + "&value=" + value);
+                reqdis.forward(request, response);
+            }
+        }    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -17,10 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EmployeeBO {
-
     PreparedStatement ps;
     DAO dao = new DAO();
-
     /**
      *
      * add new Employee to database
@@ -30,7 +28,6 @@ public class EmployeeBO {
         String sql = "INSERT INTO Employees(LastName, FirstName, BirthDate, HireDate, Address, City, Country, "
                 + "HomePhone, Mobile, Email, Note) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
         try {
-
             ps = dao.getConnection().prepareStatement(sql);
             ps.setString(1, e.getLastName());
             ps.setString(2, e.getFirstName());
@@ -48,7 +45,6 @@ public class EmployeeBO {
             Logger.getLogger(EmployeeBO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return dao.executeUpdateQuery(ps);
-
     }
 
     /**
@@ -76,7 +72,6 @@ public class EmployeeBO {
         String sql = "UPDATE Employees SET LastName=?, FirstName=?, BirthDate=?, HireDate=?, Address=?, City=?, Country=?,"
                 + "HomePhone=?, Mobile=?, Email=?, PhotoPath=?, Note=? WHERE EmployeeID=?";
         try {
-
             ps = dao.getConnection().prepareStatement(sql);
             ps.setString(1, e.getLastName());
             ps.setString(2, e.getFirstName());
@@ -105,8 +100,6 @@ public class EmployeeBO {
      */
     public List<Employee> select() {
         String sql = "select * from Employees";
-//        DAO dao = new DAO();
-
         List<Employee> list = new LinkedList();
         try {
             ResultSet rs = dao.executeQuery(sql);
@@ -165,7 +158,6 @@ public class EmployeeBO {
                 }
                 break;
         }
-//        DAO dao = new DAO();
 
         List<Employee> list = new LinkedList();
         try {
@@ -235,5 +227,4 @@ public class EmployeeBO {
         dao.closeConnection();
         return null;
     }
-
 }
